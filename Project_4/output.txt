@@ -1,0 +1,435 @@
+# SECTION 1: Loading the Boston Housing Dataset
+
++--------------------------------------------------------------+
+|                                                              |
+| file_path = 'housing.csv'                                    |
+| try:                                                         |
+|     housing_data = pd.read_csv(file_path)                    |
+|     print("File loaded successfully!\n")                     |
+| except FileNotFoundError:                                    |
+|     print(f"Error: The file '{file_path}' was not found.\n") |
+|                                                              |
+| # Displaying the first few rows and info                     |
+| print("First few rows of the dataset:\n")                    |
+| print(housing_data.head(), "\n")                             |
+|                                                              |
+| print("Dataset Information:\n")                              |
+| housing_data.info()                                          |
+| print("\n")                                                  |
+|                                                              |
++--------------------------------------------------------------+
+
+File loaded successfully!
+
+First few rows of the dataset:
+
+      RM  LSTAT  PTRATIO      MEDV
+0  6.575   4.98     15.3  504000.0
+1  6.421   9.14     17.8  453600.0
+2  7.185   4.03     17.8  728700.0
+3  6.998   2.94     18.7  701400.0
+4  7.147   5.33     18.7  760200.0 
+
+Dataset Information:
+
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 489 entries, 0 to 488
+Data columns (total 4 columns):
+ #   Column   Non-Null Count  Dtype  
+---  ------   --------------  -----  
+ 0   RM       489 non-null    float64
+ 1   LSTAT    489 non-null    float64
+ 2   PTRATIO  489 non-null    float64
+ 3   MEDV     489 non-null    float64
+dtypes: float64(4)
+memory usage: 15.4 KB
+
+
+# SECTION 2: Preprocessing the Data
+
++-----------------------------------------------------------------------+
+|                                                                       |
+| # Splitting dataset into features and target                          |
+| X = housing_data[['RM', 'LSTAT', 'PTRATIO']].values  # Input features |
+| y = housing_data['MEDV'].values.reshape(-1, 1)  # Target values       |
+|                                                                       |
+| # Standardize the input data                                          |
+| X_mean = np.mean(X, axis=0)                                           |
+| X_std = np.std(X, axis=0)                                             |
+| X = (X - X_mean) / X_std                                              |
+|                                                                       |
+| # Standardize the target values                                       |
+| y_mean = np.mean(y, axis=0)                                           |
+| y_std = np.std(y, axis=0)                                             |
+| y = (y - y_mean) / y_std                                              |
+|                                                                       |
+| print("Input features (first 5 rows):\n", X[:5], "\n")                |
+| print("Target values (first 5 rows):\n", y[:5], "\n")                 |
+|                                                                       |
++-----------------------------------------------------------------------+
+
+Input features (first 5 rows):
+ [[ 0.52055395 -1.1250769  -1.5250831 ]
+ [ 0.28104837 -0.53706982 -0.33974768]
+ [ 1.46924486 -1.25935736 -0.33974768]
+ [ 1.17841666 -1.41342652  0.08697308]
+ [ 1.41014608 -1.07560515  0.08697308]] 
+
+Target values (first 5 rows):
+ [[ 0.30064004]
+ [-0.00449803]
+ [ 1.66104726]
+ [ 1.49576414]
+ [ 1.85175855]] 
+
+# SECTION 3: Defining the Neural Network
+
++--------------------------------------------------------------------------------------------+
+|                                                                                            |
+| class NeuralNetwork:                                                                       |
+|     def __init__(self, input_size, hidden_size, output_size, learning_rate):               |
+|         self.input_size = input_size                                                       |
+|         self.hidden_size = hidden_size                                                     |
+|         self.output_size = output_size                                                     |
+|         self.learning_rate = learning_rate                                                 |
+|                                                                                            |
+|         # Initialize weights with random values                                            |
+|         self.W1 = np.random.randn(self.input_size, self.hidden_size) * 0.01                |
+|         self.b1 = np.zeros((1, self.hidden_size))                                          |
+|         self.W2 = np.random.randn(self.hidden_size, self.output_size) * 0.01               |
+|         self.b2 = np.zeros((1, self.output_size))                                          |
+|                                                                                            |
+|     # Activation function: Sigmoid                                                         |
+|     def sigmoid(self, z):                                                                  |
+|         return 1 / (1 + np.exp(-z))                                                        |
+|                                                                                            |
+|     # Derivative of Sigmoid                                                                |
+|     def sigmoid_derivative(self, z):                                                       |
+|         return z * (1 - z)                                                                 |
+|                                                                                            |
+|     # Forward propagation                                                                  |
+|     def forward(self, X):                                                                  |
+|         self.Z1 = np.dot(X, self.W1) + self.b1                                             |
+|         self.A1 = self.sigmoid(self.Z1)                                                    |
+|         self.Z2 = np.dot(self.A1, self.W2) + self.b2                                       |
+|         self.A2 = self.Z2  # Linear activation for output layer (since this is regression) |
+|         return self.A2                                                                     |
+|                                                                                            |
+|     # Backward propagation and weight updates                                              |
+|     def backward(self, X, y, output):                                                      |
+|         m = X.shape[0]  # Number of samples                                                |
+|                                                                                            |
+|         # Calculate error (mean squared error derivative)                                  |
+|         dZ2 = output - y                                                                   |
+|         dW2 = np.dot(self.A1.T, dZ2) / m                                                   |
+|         db2 = np.sum(dZ2, axis=0, keepdims=True) / m                                       |
+|                                                                                            |
+|         # Backpropagate through hidden layer                                               |
+|         dA1 = np.dot(dZ2, self.W2.T)                                                       |
+|         dZ1 = dA1 * self.sigmoid_derivative(self.A1)                                       |
+|         dW1 = np.dot(X.T, dZ1) / m                                                         |
+|         db1 = np.sum(dZ1, axis=0, keepdims=True) / m                                       |
+|                                                                                            |
+|         # Update weights and biases                                                        |
+|         self.W1 -= self.learning_rate * dW1                                                |
+|         self.b1 -= self.learning_rate * db1                                                |
+|         self.W2 -= self.learning_rate * dW2                                                |
+|         self.b2 -= self.learning_rate * db2                                                |
+|                                                                                            |
+|     # Training the network                                                                 |
+|     def train(self, X, y, epochs):                                                         |
+|         for epoch in range(epochs):                                                        |
+|             output = self.forward(X)                                                       |
+|             self.backward(X, y, output)                                                    |
+|             if epoch % 100 == 0:                                                           |
+|                 loss = np.mean(np.square(output - y))  # Mean squared error                |
+|                 print(f'Epoch {epoch}, Loss: {loss}')                                      |
+|         print("\n")                                                                        |
+|                                                                                            |
++--------------------------------------------------------------------------------------------+
+
+# SECTION 4: Training the Neural Network
++--------------------------------------------------------------------------------------------+
+|                                                                                            |
+| # Code:                                                                                    |
+| # Parameters                                                                               |
+| input_size = X.shape[1]  # 3 features                                                      |
+| output_size = 1  # Regression output (house price)                                         |
+|                                                                                            |
+| # Train the model with case (a): Hidden neurons = 3, learning rate = 0.01                  |
+| print("Training with 3 neurons in the hidden layer and learning rate 0.01:\n")             |
+| nn = NeuralNetwork(input_size, hidden_size=3, output_size=output_size, learning_rate=0.01) |
+| nn.train(X, y, epochs=1000)                                                                |
+|                                                                                            |
++--------------------------------------------------------------------------------------------+
+
+Training with 3 neurons in the hidden layer and learning rate 0.01:
+
+Epoch 0, Loss: 1.0002627761430967
+Epoch 100, Loss: 1.0000146175619706
+Epoch 200, Loss: 0.9999367562308705
+Epoch 300, Loss: 0.9998387809462286
+Epoch 400, Loss: 0.999683950240498
+Epoch 500, Loss: 0.9994204117297646
+Epoch 600, Loss: 0.9989595398884368
+Epoch 700, Loss: 0.9981465444398038
+Epoch 800, Loss: 0.9967104309722025
+Epoch 900, Loss: 0.9941799711319375
+
+
+# SECTION 5: Cross-Validation
++------------------------------------------------------------------------------------------------------------------------+
+|                                                                                                                        |
+| # Code:                                                                                                                |
+| def cross_validation(X, y, hidden_size, learning_rate, epochs, k=5):                                                   |
+|     kf = KFold(n_splits=k, shuffle=True, random_state=42)                                                              |
+|     fold_losses = []                                                                                                   |
+|                                                                                                                        |
+|     for train_index, test_index in kf.split(X):                                                                        |
+|         X_train, X_test = X[train_index], X[test_index]                                                                |
+|         y_train, y_test = y[train_index], y[test_index]                                                                |
+|                                                                                                                        |
+|         # Initialize a new network for each fold                                                                       |
+|         nn = NeuralNetwork(input_size=X.shape[1], hidden_size=hidden_size, output_size=1, learning_rate=learning_rate) |
+|                                                                                                                        |
+|         # Train the model                                                                                              |
+|         nn.train(X_train, y_train, epochs=epochs)                                                                      |
+|                                                                                                                        |
+|         # Evaluate the loss on the test set                                                                            |
+|         test_output = nn.forward(X_test)                                                                               |
+|         test_loss = np.mean(np.square(test_output - y_test))                                                           |
+|         fold_losses.append(test_loss)                                                                                  |
+|                                                                                                                        |
+|     average_loss = np.mean(fold_losses)                                                                                |
+|     print(f"Average loss for {k}-fold CV (hidden neurons = {hidden_size}, lr = {learning_rate}): {average_loss}\n")    |
+|                                                                                                                        |
++------------------------------------------------------------------------------------------------------------------------+
+
+Cross-validation with 3 neurons in the hidden layer and learning rate 0.01:
+
+Epoch 0, Loss: 1.0478507719332801
+Epoch 100, Loss: 1.0431671861428515
+Epoch 200, Loss: 1.0428611543835964
+Epoch 300, Loss: 1.0425718383372593
+Epoch 400, Loss: 1.0421026222472387
+Epoch 500, Loss: 1.041324265587061
+Epoch 600, Loss: 1.040027998534135
+Epoch 700, Loss: 1.0378695050747535
+Epoch 800, Loss: 1.0342889459294515
+Epoch 900, Loss: 1.0284019115750502
+
+
+Epoch 0, Loss: 0.9298931369923027
+Epoch 100, Loss: 0.9297008537091226
+Epoch 200, Loss: 0.9296215495634967
+Epoch 300, Loss: 0.9295189102156577
+Epoch 400, Loss: 0.929364512011215
+Epoch 500, Loss: 0.9291195740026227
+Epoch 600, Loss: 0.9287218655790239
+Epoch 700, Loss: 0.9280697399516452
+Epoch 800, Loss: 0.9269967354875592
+Epoch 900, Loss: 0.925231726464736
+
+
+Epoch 0, Loss: 1.0227175890426545
+Epoch 100, Loss: 1.0222749023263842
+Epoch 200, Loss: 1.0219486583735462
+Epoch 300, Loss: 1.0214835694350517
+Epoch 400, Loss: 1.0207560981620378
+Epoch 500, Loss: 1.0195798252533157
+Epoch 600, Loss: 1.0176555179128361
+Epoch 700, Loss: 1.0145046119070906
+Epoch 800, Loss: 1.009380333266725
+Epoch 900, Loss: 1.0011717883835034
+
+
+Average loss for 3-fold CV (hidden neurons = 3, lr = 0.01): 0.9909230267094346
+
+Cross-validation with 4 neurons in the hidden layer and learning rate 0.001:
+
+Epoch 0, Loss: 1.04095606996047
+Epoch 100, Loss: 1.0402134214023548
+Epoch 200, Loss: 1.0397128294933213
+Epoch 300, Loss: 1.0393736123672668
+Epoch 400, Loss: 1.039141946324306
+Epoch 500, Loss: 1.0389819191514382
+Epoch 600, Loss: 1.038869563805403
+Epoch 700, Loss: 1.038788879411852
+Epoch 800, Loss: 1.0387291775223124
+Epoch 900, Loss: 1.0386833121774681
+
+
+Epoch 0, Loss: 0.943702343137936
+Epoch 100, Loss: 0.9436493824701421
+Epoch 200, Loss: 0.9436086528198504
+Epoch 300, Loss: 0.9435759547286114
+Epoch 400, Loss: 0.9435484693074871
+Epoch 500, Loss: 0.9435242986439132
+Epoch 600, Loss: 0.9435021590008732
+Epoch 700, Loss: 0.9434811759932249
+Epoch 800, Loss: 0.9434607478258843
+Epoch 900, Loss: 0.9434404539575845
+
+
+Epoch 0, Loss: 1.00758279990746
+Epoch 100, Loss: 1.0075249722045108
+Epoch 200, Loss: 1.0074836921952104
+Epoch 300, Loss: 1.0074534940290667
+Epoch 400, Loss: 1.0074307223399157
+Epoch 500, Loss: 1.0074129299524988
+Epoch 600, Loss: 1.0073984759748649
+Epoch 700, Loss: 1.0073862575978225
+Epoch 800, Loss: 1.0073755311108845
+Epoch 900, Loss: 1.0073657924485795
+
+
+Epoch 0, Loss: 0.9874028553362738
+Epoch 100, Loss: 0.9873907598551389
+Epoch 200, Loss: 0.9873786672677213
+Epoch 300, Loss: 0.9873665160529014
+Epoch 400, Loss: 0.9873542533840326
+Epoch 500, Loss: 0.9873418319888488
+Epoch 600, Loss: 0.9873292080176285
+Epoch 700, Loss: 0.9873163395833562
+Epoch 800, Loss: 0.9873031857493674
+Epoch 900, Loss: 0.9872897058145071
+
+
+Epoch 0, Loss: 1.0209788676585327
+Epoch 100, Loss: 1.0206520194813655
+Epoch 200, Loss: 1.0204321413295199
+Epoch 300, Loss: 1.0202836620794904
+Epoch 400, Loss: 1.0201828429574151
+Epoch 500, Loss: 1.0201138399707452
+Epoch 600, Loss: 1.0200660767609309
+Epoch 700, Loss: 1.020032491719661
+Epoch 800, Loss: 1.020008368405321
+Epoch 900, Loss: 1.0199905551429327
+
+
+Average loss for 5-fold CV (hidden neurons = 4, lr = 0.001): 1.0040155658154248
+
+Cross-validation with 5 neurons in the hidden layer and learning rate 0.0001:
+
+Epoch 0, Loss: 0.9988822447936231
+Epoch 100, Loss: 0.9988703724111626
+Epoch 200, Loss: 0.998858973512927
+Epoch 300, Loss: 0.998848027014453
+Epoch 400, Loss: 0.9988375127659499
+Epoch 500, Loss: 0.9988274115107907
+Epoch 600, Loss: 0.998817704845848
+Epoch 700, Loss: 0.9988083751835893
+Epoch 800, Loss: 0.9987994057158577
+Epoch 900, Loss: 0.9987907803792582
+
+
+Epoch 0, Loss: 1.0378288185664448
+Epoch 100, Loss: 1.037781341292127
+Epoch 200, Loss: 1.03773585732083
+Epoch 300, Loss: 1.0376922782221194
+Epoch 400, Loss: 1.0376505194922792
+Epoch 500, Loss: 1.0376105003797609
+Epoch 600, Loss: 1.037572143718397
+Epoch 700, Loss: 1.0375353757680266
+Epoch 800, Loss: 1.0375001260622105
+Epoch 900, Loss: 1.037466327262713
+
+
+Epoch 0, Loss: 1.0123876214799048
+Epoch 100, Loss: 1.0123818649362968
+Epoch 200, Loss: 1.0123762625142647
+Epoch 300, Loss: 1.0123708072346702
+Epoch 400, Loss: 1.0123654924248724
+Epoch 500, Loss: 1.0123603117051097
+Epoch 600, Loss: 1.0123552589754863
+Epoch 700, Loss: 1.0123503284035387
+Epoch 800, Loss: 1.0123455144123512
+Epoch 900, Loss: 1.0123408116692012
+
+
+Epoch 0, Loss: 0.9379373704817645
+Epoch 100, Loss: 0.9379150410727815
+Epoch 200, Loss: 0.9378936583352083
+Epoch 300, Loss: 0.9378731802614867
+Epoch 400, Loss: 0.937853566706486
+Epoch 500, Loss: 0.9378347793048715
+Epoch 600, Loss: 0.9378167813921354
+Epoch 700, Loss: 0.9377995379291352
+Epoch 800, Loss: 0.9377830154299788
+Epoch 900, Loss: 0.9377671818931087
+
+
+Epoch 0, Loss: 0.9973451159755765
+Epoch 100, Loss: 0.9973430136452159
+Epoch 200, Loss: 0.9973409539122396
+Epoch 300, Loss: 0.9973389348121385
+Epoch 400, Loss: 0.997336954465942
+Epoch 500, Loss: 0.9973350110764151
+Epoch 600, Loss: 0.997333102924429
+Epoch 700, Loss: 0.9973312283654893
+Epoch 800, Loss: 0.9973293858264195
+Epoch 900, Loss: 0.9973275738021925
+
+
+Epoch 0, Loss: 1.0090603129168412
+Epoch 100, Loss: 1.0090590111910864
+Epoch 200, Loss: 1.0090577149484214
+Epoch 300, Loss: 1.0090564237004565
+Epoch 400, Loss: 1.009055136978768
+Epoch 500, Loss: 1.0090538543340042
+Epoch 600, Loss: 1.0090525753350303
+Epoch 700, Loss: 1.0090512995681105
+Epoch 800, Loss: 1.0090500266361273
+Epoch 900, Loss: 1.0090487561578354
+
+
+Epoch 0, Loss: 0.9915990895512319
+Epoch 100, Loss: 0.9915941673605516
+Epoch 200, Loss: 0.9915893966463324
+Epoch 300, Loss: 0.9915847708442809
+Epoch 400, Loss: 0.9915802836795194
+Epoch 500, Loss: 0.991575929153746
+Epoch 600, Loss: 0.9915717015329649
+Epoch 700, Loss: 0.9915675953357601
+Epoch 800, Loss: 0.9915636053220908
+Epoch 900, Loss: 0.9915597264825832
+
+
+Epoch 0, Loss: 0.9976468145859446
+Epoch 100, Loss: 0.9976446703760533
+Epoch 200, Loss: 0.9976425675089389
+Epoch 300, Loss: 0.9976405043265417
+Epoch 400, Loss: 0.9976384792426827
+Epoch 500, Loss: 0.9976364907398765
+Epoch 600, Loss: 0.9976345373662889
+Epoch 700, Loss: 0.9976326177328267
+Epoch 800, Loss: 0.9976307305103581
+Epoch 900, Loss: 0.9976288744270565
+
+
+Epoch 0, Loss: 1.0199354874433368
+Epoch 100, Loss: 1.0199240656558042
+Epoch 200, Loss: 1.0199130571055701
+Epoch 300, Loss: 1.0199024431426948
+Epoch 400, Loss: 1.0198922059426567
+Epoch 500, Loss: 1.0198823284696839
+Epoch 600, Loss: 1.0198727944417167
+Epoch 700, Loss: 1.0198635882969245
+Epoch 800, Loss: 1.0198546951617105
+Epoch 900, Loss: 1.0198461008201374
+
+
+Epoch 0, Loss: 0.9981615652474719
+Epoch 100, Loss: 0.9981536062551178
+Epoch 200, Loss: 0.9981458965960583
+Epoch 300, Loss: 0.998138424764859
+Epoch 400, Loss: 0.9981311797635007
+Epoch 500, Loss: 0.9981241510788357
+Epoch 600, Loss: 0.9981173286610467
+Epoch 700, Loss: 0.9981107029030596
+Epoch 800, Loss: 0.9981042646208726
+Epoch 900, Loss: 0.9980980050347574
+
+
+Average loss for 10-fold CV (hidden neurons = 5, lr = 0.0001): 1.000684085057178
+

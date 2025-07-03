@@ -1,0 +1,110 @@
+Dataset Description:
+                 id  radius_mean  texture_mean  ...  symmetry_worst  fractal_dimension_worst  Unnamed: 32
+count  5.690000e+02   569.000000    569.000000  ...      569.000000               569.000000          0.0
+mean   3.037183e+07    14.127292     19.289649  ...        0.290076                 0.083946          NaN
+std    1.250206e+08     3.524049      4.301036  ...        0.061867                 0.018061          NaN
+min    8.670000e+03     6.981000      9.710000  ...        0.156500                 0.055040          NaN
+25%    8.692180e+05    11.700000     16.170000  ...        0.250400                 0.071460          NaN
+50%    9.060240e+05    13.370000     18.840000  ...        0.282200                 0.080040          NaN
+75%    8.813129e+06    15.780000     21.800000  ...        0.317900                 0.092080          NaN
+max    9.113205e+08    28.110000     39.280000  ...        0.663800                 0.207500          NaN
+
+[8 rows x 32 columns]
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 569 entries, 0 to 568
+Data columns (total 33 columns):
+ #   Column                   Non-Null Count  Dtype  
+---  ------                   --------------  -----  
+ 0   id                       569 non-null    int64  
+ 1   diagnosis                569 non-null    object 
+ 2   radius_mean              569 non-null    float64
+ 3   texture_mean             569 non-null    float64
+ 4   perimeter_mean           569 non-null    float64
+ 5   area_mean                569 non-null    float64
+ 6   smoothness_mean          569 non-null    float64
+ 7   compactness_mean         569 non-null    float64
+ 8   concavity_mean           569 non-null    float64
+ 9   concave points_mean      569 non-null    float64
+ 10  symmetry_mean            569 non-null    float64
+ 11  fractal_dimension_mean   569 non-null    float64
+ 12  radius_se                569 non-null    float64
+ 13  texture_se               569 non-null    float64
+ 14  perimeter_se             569 non-null    float64
+ 15  area_se                  569 non-null    float64
+ 16  smoothness_se            569 non-null    float64
+ 17  compactness_se           569 non-null    float64
+ 18  concavity_se             569 non-null    float64
+ 19  concave points_se        569 non-null    float64
+ 20  symmetry_se              569 non-null    float64
+ 21  fractal_dimension_se     569 non-null    float64
+ 22  radius_worst             569 non-null    float64
+ 23  texture_worst            569 non-null    float64
+ 24  perimeter_worst          569 non-null    float64
+ 25  area_worst               569 non-null    float64
+ 26  smoothness_worst         569 non-null    float64
+ 27  compactness_worst        569 non-null    float64
+ 28  concavity_worst          569 non-null    float64
+ 29  concave points_worst     569 non-null    float64
+ 30  symmetry_worst           569 non-null    float64
+ 31  fractal_dimension_worst  569 non-null    float64
+ 32  Unnamed: 32              0 non-null      float64
+dtypes: float64(31), int64(1), object(1)
+memory usage: 146.8+ KB
+None
+
+This dataset includes patient information for cancer prediction. The target variable is 'diagnosis', where B represents benign and M represents malignant cancer types.
+
+SVM Model Training...
+SVM Accuracy: 0.9824561403508771
+SVM Classification Report:
+               precision    recall  f1-score   support
+
+           B       0.97      1.00      0.99        71
+           M       1.00      0.95      0.98        43
+
+    accuracy                           0.98       114
+   macro avg       0.99      0.98      0.98       114
+weighted avg       0.98      0.98      0.98       114
+
+
+Random Forest Model Training...
+Random Forest Accuracy: 0.9649122807017544
+Random Forest Classification Report:
+               precision    recall  f1-score   support
+
+           B       0.96      0.99      0.97        71
+           M       0.98      0.93      0.95        43
+
+    accuracy                           0.96       114
+   macro avg       0.97      0.96      0.96       114
+weighted avg       0.97      0.96      0.96       114
+
+
+Neural Network Model Training...
+Best Neural Network Parameters: {'activation': 'tanh', 'hidden_layer_sizes': (10,)}
+Neural Network Accuracy: 0.6228070175438597
+Neural Network Classification Report:
+               precision    recall  f1-score   support
+
+           B       0.62      1.00      0.77        71
+           M       0.00      0.00      0.00        43
+
+    accuracy                           0.62       114
+   macro avg       0.31      0.50      0.38       114
+weighted avg       0.39      0.62      0.48       114
+
+
+Model Comparison Summary:
+SVM (rbf kernel) Accuracy: 0.9824561403508771
+Random Forest Accuracy: 0.9649122807017544
+Neural Network Accuracy: 0.6228070175438597
+
+Discussion:
+SVM, with multiple kernel options, generally showed high accuracy, particularly with the 'rbf' kernel.
+The Random Forest model also performed well, offering robust classification with balanced precision and recall.
+The Neural Network model's performance was lower; however, parameter tuning via grid search helped improve accuracy.
+
+Conclusion:
+For cancer type prediction, SVM and Random Forest both performed well, with SVM slightly outperforming in accuracy.
+The best-performing model based on accuracy and efficiency was SVM with the 'rbf' kernel.
+Selecting the appropriate model and tuning parameters is essential in machine learning to ensure optimal performance.

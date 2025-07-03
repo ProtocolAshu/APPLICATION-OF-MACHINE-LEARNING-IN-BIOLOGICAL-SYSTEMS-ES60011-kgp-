@@ -1,0 +1,67 @@
+********** Heart Study - Logistic Regression Results **********
+
+### Missing values in each column ###
+male                 0
+age                  0
+education          105
+currentSmoker        0
+cigsPerDay          29
+BPMeds              53
+prevalentStroke      0
+prevalentHyp         0
+diabetes             0
+totChol             50
+sysBP                0
+diaBP                0
+BMI                 19
+heartRate            1
+glucose            388
+TenYearCHD           0
+dtype: int64
+
+-----------------------------------------------------------------
+
+********** Model Evaluation Results **********
+
+### Model Accuracy ###
+Accuracy: 0.8553
+
+-----------------------------------------------------------------
+
+### Confusion Matrix ###
+[[1067   10]
+ [ 174   21]]
+
+-----------------------------------------------------------------
+
+### Classification Report ###
+              precision    recall  f1-score   support
+
+         0.0       0.86      0.99      0.92      1077
+         1.0       0.68      0.11      0.19       195
+
+    accuracy                           0.86      1272
+   macro avg       0.77      0.55      0.55      1272
+weighted avg       0.83      0.86      0.81      1272
+
+-----------------------------------------------------------------
+
+### Model Coefficients ###
+                 Coefficient
+male                0.158036
+age                 0.576343
+education           0.011343
+currentSmoker      -0.051631
+cigsPerDay          0.315811
+BPMeds              0.023993
+prevalentStroke     0.101196
+prevalentHyp        0.119063
+diabetes           -0.012068
+totChol             0.020598
+sysBP               0.274428
+diaBP               0.038238
+BMI                 0.028024
+heartRate          -0.064547
+glucose             0.172702
+-----------------------------------------------------------------
+
