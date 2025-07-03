@@ -1,11 +1,53 @@
-Here are the main points from the README.md of the repository:
+# Application of Machine Learning in Biological Systems (ES60011)
 
-📚 Course: Application of Machine Learning in Biological Systems (ES60011) – Autumn Semester 2023
+Welcome to my repository for the **Application of Machine Learning in Biological Systems (ES60011)** course!
 
-📁 Content: Contains all course assignments, including code, documentation, and resources
+This repository contains all assignments completed during the **Autumn Semester of 2023**.
 
-🎯 Purpose: Demonstrates the application of ML in biological contexts and reflects the author's learning journey
+---
 
-🙏 Acknowledgement: Thanks to instructors and peers for their guidance
+## 📘 Course Overview
 
-🧪 Focus: Intersection of machine learning and biology through practical assignments
+This course explores how machine learning (ML) techniques can be applied to biological systems.  
+The assignments cover a wide range of ML methods tailored to biological datasets and real-world problems.
+
+---
+
+## 📁 Repository Contents
+
+Each assignment folder includes:
+
+- ✅ Problem description
+- 🧠 Machine learning approach
+- 🧪 Dataset details
+- 💻 Python code implementation
+- 📊 Results and visualizations
+- 📝 Documentation or report (if applicable)
+
+---
+
+## 🎯 Purpose
+
+This repository showcases:
+
+- My understanding of applying ML to biological problems
+- Skills developed in data preprocessing, model training, evaluation, and visualization
+- The interdisciplinary approach combining biology and data science
+
+---
+
+## 🙏 Acknowledgements
+
+I would like to thank:
+
+- The course instructor(s) for their valuable guidance
+- My peers for discussions and support throughout the semester
+
+---
+
+## 📌 Notes
+
+- This is a personal academic repository and not an official course repo.
+- For any queries or collaborations, feel free to reach out!
+
+---
