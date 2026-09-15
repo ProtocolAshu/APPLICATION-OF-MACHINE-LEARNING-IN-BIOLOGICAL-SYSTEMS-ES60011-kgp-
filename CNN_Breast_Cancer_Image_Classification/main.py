@@ -133,16 +133,9 @@ if len(test_images) > 0:
     predictions = model.predict(test_generator, steps=len(test_generator), verbose=1)
     predicted_labels = ['benign' if p < 0.5 else 'malignant' for p in predictions]
 
-    # Write predicted labels to output.txt
     output_file.write("\nPredicted labels for test images:\n")
     for i, label in enumerate(predicted_labels):
         output_file.write(f"Image {i+1}: {label}\n")
-
-
-# Write predicted labels to output.txt
-output_file.write("\nPredicted labels for test images:\n")
-for i, label in enumerate(predicted_labels):
-    output_file.write(f"Image {i+1}: {label}\n")
 
 # Evaluate the model on validation data
 validation_loss, validation_acc = model.evaluate(validation_generator)

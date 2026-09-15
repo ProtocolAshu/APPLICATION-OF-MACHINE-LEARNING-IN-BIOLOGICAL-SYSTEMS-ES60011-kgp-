@@ -15,6 +15,15 @@ The assignments cover a wide range of ML methods tailored to biological datasets
 
 ## 📁 Repository Contents
 
+| # | Project | Topic | Dataset |
+|---|---------|-------|---------|
+| 1 | [Linear_Regression_Insurance_Cost_Prediction](Linear_Regression_Insurance_Cost_Prediction/) | Linear Regression | Medical insurance costs |
+| 2 | [Logistic_Regression_Heart_Disease_Prediction](Logistic_Regression_Heart_Disease_Prediction/) | Logistic Regression | Framingham heart study |
+| 3 | [Decision_Tree_Breast_Cancer_Survival_Prediction](Decision_Tree_Breast_Cancer_Survival_Prediction/) | Decision Tree | Breast cancer survival |
+| 4 | [Neural_Network_House_Price_Prediction](Neural_Network_House_Price_Prediction/) | Neural Network from scratch (NumPy) | Boston housing |
+| 5 | [CNN_Breast_Cancer_Image_Classification](CNN_Breast_Cancer_Image_Classification/) | Convolutional Neural Network (TensorFlow/Keras) | Breast cancer histology images |
+| 6 | [SVM_RandomForest_NeuralNetwork_Cancer_Prediction_Comparison](SVM_RandomForest_NeuralNetwork_Cancer_Prediction_Comparison/) | SVM vs. Random Forest vs. Neural Network | Wisconsin breast cancer |
+
 Each assignment folder includes:
 
 - ✅ Problem description
